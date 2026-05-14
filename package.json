@@ -9,6 +9,7 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:regression": "playwright test --project=chromium",
     "e2e": "playwright test --project=chromium",
     "e2e:staging": "STAGING_BASE_URL=https://staging.yourapi.com playwright test --project=staging"
   },
@@ -32,6 +33,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.60.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
