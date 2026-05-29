@@ -313,15 +313,14 @@ test.describe("Sprint 1 frontend regression automation", () => {
     expect(horizontalOverflow).toBe(false);
   });
 
-  test("FE-NAV-001/003 app shell renders MVP nav items, active state, badge, and mobile drawer", async ({
+  test("FE-NAV-001/003 app shell renders HR nav items, active state, badge, and mobile drawer", async ({
     page,
   }) => {
     await login(page);
     await expect(page.getByRole("link", { name: "Dashboard" }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "Orders" }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "Products" }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "Customers" }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "Coupons" }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "Employees" }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "Departments" }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "Org Chart" }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Settings" }).first()).toBeVisible();
     await expect(page.getByText("3")).toBeVisible();
 
@@ -332,7 +331,7 @@ test.describe("Sprint 1 frontend regression automation", () => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.getByLabel(/open navigation/i).click();
     await expect(page.getByRole("button", { name: /close navigation/i })).toBeVisible();
-    await page.getByRole("link", { name: "Orders" }).click();
+    await page.getByRole("link", { name: "Employees" }).click();
     await expect(page.getByRole("button", { name: /close navigation/i })).toBeHidden();
   });
 

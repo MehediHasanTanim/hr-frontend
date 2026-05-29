@@ -43,10 +43,9 @@ describe("App shell components", () => {
     render(<Sidebar mobileOpen={false} onMobileOpenChange={vi.fn()} />);
 
     expect(screen.getAllByLabelText("Dashboard").length).toBeGreaterThan(0);
-    expect(screen.getAllByLabelText("Orders").length).toBeGreaterThan(0);
-    expect(screen.getAllByLabelText("Products").length).toBeGreaterThan(0);
-    expect(screen.getAllByLabelText("Customers").length).toBeGreaterThan(0);
-    expect(screen.getAllByLabelText("Coupons").length).toBeGreaterThan(0);
+    expect(screen.getAllByLabelText("Employees").length).toBeGreaterThan(0);
+    expect(screen.getAllByLabelText("Departments").length).toBeGreaterThan(0);
+    expect(screen.getAllByLabelText("Org Chart").length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText("Settings").length).toBeGreaterThan(0);
   });
 
@@ -59,7 +58,7 @@ describe("App shell components", () => {
     render(<Wrapper />);
 
     await user.click(screen.getByLabelText(/open navigation/i));
-    expect(screen.getAllByText("CommerceOps").length).toBeGreaterThan(1);
+    expect(screen.getAllByText("PeopleOps").length).toBeGreaterThan(1);
     await user.click(screen.getByLabelText(/close navigation/i));
     expect(screen.queryByRole("button", { name: /close navigation/i })).not.toBeInTheDocument();
   });

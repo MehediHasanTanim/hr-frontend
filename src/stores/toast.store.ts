@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useMemo } from "react";
 
 export type ToastVariant = "success" | "warning" | "danger" | "info";
 
@@ -44,9 +45,13 @@ export const useToastStore = create<ToastStoreState>((set) => ({
 
 export const useToastQueue = () => useToastStore((state) => state.toasts);
 
-export const useToastActions = () =>
-  useToastStore((state) => ({
-    addToast: state.addToast,
-    dismissToast: state.dismissToast,
-    clearToasts: state.clearToasts,
-  }));
+export const useToastActions = () => {
+  const addToast = useToastStore((state) => state.addToast);
+  const dismissToast = useToastStore((state) => state.dismissToast);
+  const clearToasts = useToastStore((state) => state.clearToasts);
+
+  return useMemo(
+    () => ({ addToast, dismissToast, clearToasts }),
+    [addToast, dismissToast, clearToasts],
+  );
+};

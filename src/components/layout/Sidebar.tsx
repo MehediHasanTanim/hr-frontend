@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BadgePercent,
   Boxes,
+  Building2,
   LayoutDashboard,
   LogOut,
   Menu,
-  Package,
+  Network,
   Settings,
-  ShoppingCart,
   Users,
   X,
 } from "lucide-react";
@@ -22,10 +21,9 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/orders", label: "Orders", icon: ShoppingCart },
-  { href: "/dashboard/products", label: "Products", icon: Package },
-  { href: "/dashboard/customers", label: "Customers", icon: Users },
-  { href: "/dashboard/coupons", label: "Coupons", icon: BadgePercent },
+  { href: "/employees", label: "Employees", icon: Users },
+  { href: "/departments", label: "Departments", icon: Building2 },
+  { href: "/org-chart", label: "Org Chart", icon: Network },
   { href: "/dashboard/settings/company", label: "Settings", icon: Settings },
 ];
 
@@ -99,7 +97,7 @@ export function Sidebar({
       <aside className="hidden w-64 shrink-0 border-r bg-background p-4 lg:flex lg:flex-col">
         <div className="mb-8 flex items-center gap-2">
           <Boxes className="size-7 text-primary" />
-          <span className="text-lg font-semibold">CommerceOps</span>
+          <span className="text-lg font-semibold">PeopleOps</span>
         </div>
         <div className="flex-1"><NavList /></div>
         <UserFooter />
@@ -125,7 +123,7 @@ export function Sidebar({
             <div className="mb-8 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Boxes className="size-7 text-primary" />
-                <span className="text-lg font-semibold">CommerceOps</span>
+                <span className="text-lg font-semibold">PeopleOps</span>
               </div>
               <Button aria-label="Close navigation" size="icon" type="button" variant="ghost" onClick={() => onMobileOpenChange?.(false)}>
                 <X className="size-4" />
