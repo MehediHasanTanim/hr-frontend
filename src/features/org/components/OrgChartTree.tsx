@@ -1,44 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Minus, Plus, Users } from "lucide-react";
+import { type SyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
+import { Minus, Plus } from "lucide-react";
+import Tree, { type RawNodeDatum, type RenderCustomNodeElementFn } from "react-d3-tree";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { OrgChartNode } from "@/features/org/types/org.types";
-
-function NodeCard({ node, onDrillDown }: { node: OrgChartNode; onDrillDown: (node: OrgChartNode) => void }) {
-  return (
-    <button
-      className="w-56 rounded-lg border bg-background p-3 text-left shadow-sm hover:border-primary"
-      type="button"
-      onClick={() => onDrillDown(node)}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="font-medium">{node.name}</p>
-          <p className="text-sm text-muted-foreground">{node.jobTitle || "Unassigned"}</p>
-        </div>
-        <Badge variant="outline"><Users className="size-3" /> {node.directReportCount}</Badge>
-      </div>
-      <p className="mt-2 text-xs text-muted-foreground">{node.department || "No department"}</p>
-      <p className="mt-2 text-xs">Headcount: {node.headcount}</p>
-    </button>
-  );
-}
-
-function TreeBranch({ node, onDrillDown }: { node: OrgChartNode; onDrillDown: (node: OrgChartNode) => void }) {
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <NodeCard node={node} onDrillDown={onDrillDown} />
-      {node.children?.length ? (
-        <div className="flex min-w-max gap-4 border-t pt-4">
-          {node.children.map((child) => <TreeBranch key={child.id} node={child} onDrillDown={onDrillDown} />)}
-        </div>
-      ) : null}
-    </div>
-  );
-}
 
 function findNode(root: OrgChartNode, id: string): OrgChartNode | undefined {
   if (root.id === id) {
@@ -53,12 +20,95 @@ function findNode(root: OrgChartNode, id: string): OrgChartNode | undefined {
   return undefined;
 }
 
+function toTreeDatum(node: OrgChartNode): RawNodeDatum {
+  const datum: RawNodeDatum = {
+    name: node.name,
+    attributes: {
+      id: node.id,
+      jobTitle: node.jobTitle || "Unassigned",
+      department: node.department || "No department",
+      directReportCount: node.directReportCount,
+      headcount: node.headcount,
+    },
+  };
+
+  if (node.children?.length) {
+    datum.children = node.children.map(toTreeDatum);
+  }
+
+  return datum;
+}
+
+function useContainerSize() {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [size, setSize] = useState({ width: 960, height: 640 });
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) {
+      return;
+    }
+
+    const updateSize = () => {
+      const next = element.getBoundingClientRect();
+      setSize({ width: next.width || 960, height: next.height || 640 });
+    };
+
+    updateSize();
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, size };
+}
+
 export function OrgChartTree({ data }: { data?: OrgChartNode | undefined }) {
   const [rootId, setRootId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const visibleRoot = useMemo(() => (data && rootId ? findNode(data, rootId) ?? data : data), [data, rootId]);
+  const treeData = useMemo(() => (visibleRoot ? toTreeDatum(visibleRoot) : undefined), [visibleRoot]);
+  const { ref, size } = useContainerSize();
 
-  if (!visibleRoot) {
+  const renderNode: RenderCustomNodeElementFn = ({ nodeDatum }) => {
+    const attributes = nodeDatum.attributes ?? {};
+    const nodeId = String(attributes.id ?? "");
+    const jobTitle = String(attributes.jobTitle ?? "Unassigned");
+    const department = String(attributes.department ?? "No department");
+    const directReportCount = Number(attributes.directReportCount ?? 0);
+    const headcount = Number(attributes.headcount ?? 0);
+
+    function drillDown(event: SyntheticEvent) {
+      event.stopPropagation();
+      if (nodeId) {
+        setRootId(nodeId);
+      }
+    }
+
+    return (
+      <g className="outline-none">
+        <rect
+          className="cursor-pointer"
+          fill="hsl(var(--background))"
+          height={112}
+          rx={8}
+          stroke="hsl(var(--border))"
+          width={232}
+          x={-116}
+          y={-52}
+          onClick={drillDown}
+        />
+        <text fill="hsl(var(--foreground))" fontSize={14} fontWeight={600} textAnchor="start" x={-100} y={-22}>{nodeDatum.name}</text>
+        <text fill="hsl(var(--muted-foreground))" fontSize={12} textAnchor="start" x={-100} y={-3}>{jobTitle}</text>
+        <text fill="hsl(var(--muted-foreground))" fontSize={11} textAnchor="start" x={-100} y={20}>{department}</text>
+        <text fill="hsl(var(--foreground))" fontSize={11} textAnchor="start" x={-100} y={42}>Headcount: {headcount}</text>
+        <rect fill="hsl(var(--background))" height={22} rx={5} stroke="hsl(var(--border))" width={42} x={58} y={-38} />
+        <text fill="hsl(var(--foreground))" fontSize={11} textAnchor="middle" x={79} y={-23}>{directReportCount}</text>
+      </g>
+    );
+  };
+
+  if (!visibleRoot || !treeData) {
     return <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">No organization chart data found.</div>;
   }
 
@@ -72,10 +122,33 @@ export function OrgChartTree({ data }: { data?: OrgChartNode | undefined }) {
           <Button aria-label="Zoom in" size="icon-sm" type="button" variant="outline" onClick={() => setZoom((value) => Math.min(1.4, value + 0.1))}><Plus className="size-4" /></Button>
         </div>
       </div>
-      <div className="h-[640px] overflow-auto rounded-lg border bg-muted/20 p-6">
-        <div className="min-w-max origin-top-left transition-transform" style={{ transform: `scale(${zoom})` }}>
-          <TreeBranch node={visibleRoot} onDrillDown={(node) => setRootId(node.id)} />
+      {visibleRoot.children?.length ? (
+        <div className="flex flex-wrap gap-2">
+          {visibleRoot.children.map((child) => (
+            <Button key={child.id} aria-label={child.name} size="sm" type="button" variant="outline" onClick={() => setRootId(child.id)}>
+              {child.jobTitle || child.department || "View team"}
+            </Button>
+          ))}
         </div>
+      ) : null}
+      <div ref={ref} className="h-[640px] overflow-hidden rounded-lg border bg-muted/20">
+        <Tree
+          key={visibleRoot.id}
+          centeringTransitionDuration={250}
+          collapsible={false}
+          data={treeData}
+          dimensions={size}
+          draggable
+          nodeSize={{ x: 280, y: 180 }}
+          orientation="vertical"
+          pathFunc="step"
+          renderCustomNodeElement={renderNode}
+          scaleExtent={{ min: 0.6, max: 1.4 }}
+          separation={{ siblings: 1.15, nonSiblings: 1.35 }}
+          translate={{ x: size.width / 2, y: 80 }}
+          zoom={zoom}
+          zoomable
+        />
       </div>
     </div>
   );
