@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Banknote,
   Boxes,
   Building2,
   Calendar,
   CalendarDays,
   CheckCircle,
   Clock,
+  DollarSign,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -42,6 +44,11 @@ const navItems: NavItem[] = [
   { href: "/leave/calendar", label: "Leave Calendar", icon: Calendar, indent: true },
   { href: "/leave/approvals", label: "Approvals", icon: CheckCircle, indent: true },
   { href: "/attendance", label: "Attendance", icon: Clock, indent: true },
+  { href: "#", label: "Payroll", icon: Banknote, section: true },
+  { href: "/payroll/components", label: "Salary Components", icon: DollarSign, indent: true },
+  { href: "/payroll/structures", label: "Salary Structures", icon: FileText, indent: true },
+  { href: "/payroll/cycles", label: "Payroll Cycles", icon: Calendar, indent: true },
+  { href: "/payroll/payslips", label: "Payslips", icon: CheckCircle, indent: true },
   { href: "/dashboard/settings/company", label: "Settings", icon: Settings },
 ];
 
