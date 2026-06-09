@@ -53,7 +53,6 @@ export function SalaryComponentFormDrawer({
     },
   });
 
-  const watchType = form.watch("type");
   const watchCalc = form.watch("calculationType");
   const watchName = form.watch("name");
 
@@ -94,7 +93,6 @@ export function SalaryComponentFormDrawer({
   const {
     formState: { errors },
     handleSubmit,
-    setValue,
   } = form;
 
   return (

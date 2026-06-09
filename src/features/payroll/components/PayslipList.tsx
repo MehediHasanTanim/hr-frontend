@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePayslips } from "@/features/payroll/api/payslips";
-import type { Payslip } from "@/features/payroll/types";
 
 export function PayslipList({
   employeeId,
@@ -147,7 +146,7 @@ export function PayslipList({
                   </td>
                   <td className="px-3 py-3 text-right">
                     <div className="flex justify-end gap-1">
-                      <Link href={`/payslips/${ps.id}`}>
+                      <Link href={isHrView ? `/payroll/payslips/${ps.id}` : `/payslips/${ps.id}`}>
                         <Button size="icon-sm" type="button" variant="ghost" aria-label="View">
                           <Eye className="size-4" />
                         </Button>

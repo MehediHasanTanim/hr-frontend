@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";

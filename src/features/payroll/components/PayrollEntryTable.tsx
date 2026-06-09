@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { AlertCircle, ChevronDown, ChevronUp, Search } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -17,7 +16,6 @@ import {
   usePayrollEntries,
 } from "@/features/payroll/api/payroll-cycles";
 import { EntryStatusBadge } from "@/features/payroll/components/EntryStatusBadge";
-import type { PayrollEntry, PayrollEntryComponent } from "@/features/payroll/types";
 import { cn } from "@/lib/utils";
 
 function fmt(amount: number) {

@@ -6,10 +6,15 @@ import { ChevronDown, ChevronUp, Download, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { usePayslip } from "@/features/payroll/api/payslips";
 
-export function PayslipViewer({ payslipId }: { payslipId: string }) {
+export function PayslipViewer({
+  payslipId,
+  isHrView = false,
+}: {
+  payslipId: string;
+  isHrView?: boolean;
+}) {
   const { data: payslip, isLoading, error, refetch } = usePayslip(payslipId);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -50,7 +55,7 @@ export function PayslipViewer({ payslipId }: { payslipId: string }) {
       {/* Left panel */}
       <div className="w-[400px] shrink-0 space-y-4">
         <Link
-          href="/payslips"
+          href={isHrView ? "/payroll/payslips" : "/payslips"}
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           ← All payslips

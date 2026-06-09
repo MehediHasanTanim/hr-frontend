@@ -16,10 +16,8 @@ import { useToastStore } from "@/stores/toast.store";
 import {
   useApprovePayrollCycle,
   useDisbursePayrollCycle,
-  usePayrollCycle,
   useReversePayrollCycle,
 } from "@/features/payroll/api/payroll-cycles";
-import { CycleStatusBadge } from "@/features/payroll/components/CycleStatusBadge";
 import type { PayrollCycle } from "@/features/payroll/types";
 
 function fmt(amount: number) {
@@ -50,7 +48,7 @@ export function CycleApprovalPanel({
   const disburseMutation = useDisbursePayrollCycle(cycle.id);
 
   function handleApprove() {
-    approveMutation.mutate(undefined, {
+    const opts = {
       onSuccess: () => {
         addToast({ message: "Payroll approved", variant: "success" });
         setApproveModal(false);
@@ -59,7 +57,8 @@ export function CycleApprovalPanel({
       onError: () => {
         addToast({ message: "Failed to approve payroll", variant: "danger" });
       },
-    });
+    };
+    approveMutation.mutate(undefined, opts);
   }
 
   function handleReverse() {
@@ -84,7 +83,7 @@ export function CycleApprovalPanel({
   }
 
   function handleDisburse() {
-    disburseMutation.mutate(undefined, {
+    const opts = {
       onSuccess: () => {
         addToast({
           message: "Payroll disbursed. Payslips are being generated.",
@@ -96,7 +95,8 @@ export function CycleApprovalPanel({
       onError: () => {
         addToast({ message: "Failed to disburse payroll", variant: "danger" });
       },
-    );
+    };
+    disburseMutation.mutate(undefined, opts);
   }
 
   function handleExportBankFile() {

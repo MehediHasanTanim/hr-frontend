@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { Eye, Loader2, Play, Plus } from "lucide-react";
+import { Eye, Loader2, Plus } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToastStore } from "@/stores/toast.store";
@@ -20,7 +19,7 @@ import type { PayrollCycle } from "@/features/payroll/types";
 
 export function PayrollCycleList() {
   const { addToast } = useToastStore();
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const [createModal, setCreateModal] = useState(false);
   const [newMonth, setNewMonth] = useState(new Date().getMonth() + 1);
   const [newYear, setNewYear] = useState(new Date().getFullYear());
@@ -29,7 +28,6 @@ export function PayrollCycleList() {
   const createMutation = useCreatePayrollCycle();
 
   const cycles = data?.data ?? [];
-  const total = data?.total ?? 0;
 
   function cycleStatus(entry: PayrollCycle) {
     return entry.status;
@@ -39,7 +37,7 @@ export function PayrollCycleList() {
     createMutation.mutate(
       { month: newMonth, year: newYear },
       {
-        onSuccess: (newCycle) => {
+        onSuccess: () => {
           addToast({ message: "Cycle created", variant: "success" });
           setCreateModal(false);
         },

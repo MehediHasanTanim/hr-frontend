@@ -77,7 +77,6 @@ export function SalaryRevisionDrawer({
   const {
     formState: { errors },
     handleSubmit,
-    setValue,
     reset,
   } = form;
 
