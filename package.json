@@ -11,7 +11,13 @@
     "test:watch": "vitest",
     "test:regression": "playwright test --project=chromium",
     "e2e": "playwright test --project=chromium",
-    "e2e:staging": "STAGING_BASE_URL=https://staging.yourapi.com playwright test --project=staging"
+    "e2e:staging": "STAGING_BASE_URL=https://staging.yourapi.com playwright test --project=staging",
+    "test:nest": "jest --selectProjects unit --passWithNoTests",
+    "test:nest:cov": "jest --selectProjects unit --coverage",
+    "test:nest:integration": "jest --selectProjects integration --runInBand --forceExit",
+    "test:nest:all": "jest --runInBand --forceExit",
+    "test:e2e:smoke": "playwright test e2e/smoke/",
+    "test:e2e:smoke:report": "playwright test e2e/smoke/ --reporter=html"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
