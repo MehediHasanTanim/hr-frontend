@@ -31,3 +31,20 @@ export function mimeTypeToIcon(mimeType: string): 'FileText' | 'Image' | 'File' 
 export function truncate(str: string, maxLength: number): string {
   return str.length > maxLength ? `${str.slice(0, maxLength)}...` : str;
 }
+
+/**
+ * Format a numeric amount as a locale-aware currency string.
+ * Defaults to USD. Never use inline .toFixed() in JSX for money.
+ */
+export function formatCurrency(
+  amount: number,
+  currency = "USD",
+  locale = "en-US",
+): string {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
